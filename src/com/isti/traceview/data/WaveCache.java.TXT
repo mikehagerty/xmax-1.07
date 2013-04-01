@@ -1,0 +1,228 @@
+package com.isti.traceview.data;
+
+import gov.usgs.util.Util;
+import gov.usgs.vdx.data.wave.Wave;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.log4j.Logger;
+
+import com.isti.traceview.common.TimeInterval;
+
+public class WaveCache {
+	private static Logger lg = Logger.getLogger(WaveCache.class);
+	private WaveCacheInternal waveCache;
+
+	public WaveCache(long maxSpaceUsed) {
+		waveCache = new WaveCacheInternal(maxSpaceUsed);
+	}
+
+	private static String getKey(String station, String channel, String network, String location) {
+		return network + " " + station + " " + channel + " " + location;
+	}
+
+	public synchronized Wave getWave(String station, String channel, String network, String location, TimeInterval ti) {
+		lg.debug("WaveCache.getWave: " + station + " " + channel + " " + network + " " + location + " " + ti);
+		List<CachedWave> waves = waveCache.get(getKey(station, channel, network, location));
+		if (waves == null)
+			return null;
+		else {
+			List<Wave> lst=new ArrayList<Wave>();
+			for (CachedWave wave : waves) {
+				lg.debug("Checking wave: " + wave.getRequestedTI());
+				if (ti==null || wave.getRequestedTI().isContain(ti)) {
+					Wave toAdd = wave.getWave();
+					for(Wave toCheck: lst){
+						if(toCheck.overlaps(toAdd)){
+							toCheck = toCheck.combine(toAdd);
+							break;
+						}
+					}
+					lst.add(toAdd);
+				}
+				continue;
+			}
+			return Wave.join(lst);
+		}
+	}
+
+	public synchronized void putWave(String station, String channel, String network, String location, TimeInterval request, Wave wave) {
+		lg.debug("WaveCache.putWave: " + station + " " + channel + " " + network + " " + location + " " + Util.j2KToDateString(wave.getStartTime()) + "-"
+				+ Util.j2KToDateString(wave.getEndTime()));
+		String key = getKey(station, channel, network, location);
+		List<CachedWave> waves = waveCache.get(key);
+		if (waves == null) {
+			waves = new ArrayList<CachedWave>();
+			waves.add(new CachedWave(request, wave));
+			waveCache.put(key, waves);
+		} else {
+			boolean waveProcessed = false;
+			Iterator<CachedWave> it = waves.iterator();
+			while (it.hasNext()) {
+				CachedWave storedWave = it.next();
+				boolean join = false;
+				if (storedWave.getWave().adjacent(wave))
+					join = true;
+				if (storedWave.getWave().overlaps(wave))
+					join = true;
+				if (join) {
+					Wave newWave = storedWave.getWave().combine(wave);
+					TimeInterval newTI = TimeInterval.getAggregate(storedWave.getRequestedTI(), new TimeInterval(Util.j2KToDate(newWave.getStartTime()), Util.j2KToDate(newWave.getEndTime()))); 
+					if (newWave != null) {
+						storedWave.setRequestedTI(TimeInterval.getAggregate(request, newTI));
+						storedWave.setWave(newWave);
+//						it.remove();
+//						putWave(station,
+//								channel,
+//								network,
+//								location,
+//								TimeInterval.getAggregate(request, new TimeInterval(Util.j2KToDate(newWave.getStartTime()), Util.j2KToDate(newWave.getEndTime()))), newWave);
+						waveProcessed = true;
+					}
+					return;
+				}
+			}
+			if (!waveProcessed)
+				waves.add(new CachedWave(request, wave));
+		}
+	}
+	
+	public synchronized void deleteWave(String station, String channel, String network, String location, TimeInterval ti){
+		lg.debug("WaveCache.deleteWave: " + station + " " + channel + " " + network + " " + location + " " + ti);
+		List<CachedWave> waves = waveCache.get(getKey(station, channel, network, location));
+		if (waves != null){
+			for (CachedWave wave : waves) {
+				lg.debug("Checking wave: " + wave.getRequestedTI());
+				TimeInterval waveTI = wave.getWaveTI();
+				if (waveTI.isContain(ti) || waveTI.isIntersect(ti) || ti.isContain(waveTI)) {
+					TimeInterval toProcess = new TimeInterval(Math.max(waveTI.getStart(), ti.getStart()), Math.min(waveTI.getEnd(), ti.getEnd()));
+					int startIndex = new Double((toProcess.getStart()-waveTI.getStart())/(1000.0D/wave.getWave().getSamplingRate())).intValue();
+					int endIndex = startIndex + new Double(toProcess.getDuration()/(1000.0D/wave.getWave().getSamplingRate())).intValue();
+					for(int i = startIndex; i<=endIndex;i++){
+						wave.getWave().buffer[i]=SourceWaveServer.VALUE_NO_DATA;
+					}
+				}
+			}
+		}
+	}
+
+
+	public long getSpaceUsed() {
+		return waveCache.spaceUsed;
+	}
+
+	/**
+	 * We should avoid network requests if returned wave time interval is less
+	 * than requested one
+	 * 
+	 */
+	class CachedWave {
+		private TimeInterval requested = null;
+		private Wave wave = null;
+
+		public CachedWave(TimeInterval requested, Wave wave) {
+			this.requested = requested;
+			this.wave = wave;
+		}
+		
+		public TimeInterval getRequestedTI() {
+			return requested;
+		}
+		
+		public TimeInterval getWaveTI(){
+			return new TimeInterval(Util.j2KToDate(wave.getStartTime()), Util.j2KToDate(wave.getEndTime()));
+		}
+
+		/**
+		 * @param requested the requested to set
+		 */
+		public void setRequestedTI(TimeInterval requested) {
+			this.requested = requested;
+		}
+
+		/**
+		 * @param wave the wave to set
+		 */
+		public void setWave(Wave wave) {
+			this.wave = wave;
+		}
+
+		/**
+		 * @return the wave
+		 */
+		public Wave getWave() {
+			return wave;
+		}
+
+	}
+
+	class WaveCacheInternal extends LinkedHashMap<String, List<CachedWave>> {
+
+		private long maxSpaceUsed;
+		private long spaceUsed;
+
+		public WaveCacheInternal(long maxSpaceUsed) {
+			super();
+			this.maxSpaceUsed = maxSpaceUsed;
+		}
+
+		@Override
+		public List<CachedWave> remove(Object key) {
+			lg.debug("WaveCache: removing " + key);
+			List<CachedWave> toRemove = waveCache.get(key);
+			spaceUsed -= getMemorySize(toRemove);
+			return super.remove(key);
+		}
+
+		@Override
+		public void putAll(Map<? extends String, ? extends List<CachedWave>> m) {
+			for (String key : m.keySet()) {
+				lg.debug("WaveCache: putting " + key + "; cache size " + spaceUsed);
+				spaceUsed += getMemorySize(m.get(key));
+			}
+			super.putAll(m);
+		}
+
+		@Override
+		public List<CachedWave> put(String key, List<CachedWave> value) {
+			lg.debug("WaveCache: putting " + key + "; cache size " + spaceUsed);
+			spaceUsed += getMemorySize(value);
+			return super.put(key, value);
+		}
+
+		protected boolean removeEldestEntry(java.util.Map.Entry<String, List<CachedWave>> eldest) {
+			if ((maxSpaceUsed > 0) && (spaceUsed > maxSpaceUsed)) {
+				while (spaceUsed > maxSpaceUsed) {
+					Object[] keys = keySet().toArray();
+					if (keys.length > 0) {
+						String key = (String) keys[keys.length - 1];
+						List<CachedWave> toRemove = get(key);
+						for (CachedWave cWave : toRemove) {
+							spaceUsed -= cWave.getWave().getMemorySize();
+						}
+						remove(key);
+					}
+				}
+			}
+			return false;
+		}
+
+		@Override
+		public void clear() {
+			super.clear();
+			spaceUsed = 0;
+		}
+
+		private long getMemorySize(List<CachedWave> value) {
+			long ret = 0L;
+			for (CachedWave cWave : value) {
+				ret += cWave.getWave().getMemorySize();
+			}
+			return ret;
+		}
+	}
+}

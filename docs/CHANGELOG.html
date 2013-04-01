@@ -1,0 +1,353 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta http-equiv="Content-Style-Type" content="text/css">
+  <title>XYZ Revision History</title>
+  <meta name="Author" content="Max Kokoulin">
+  <meta name="Generator" content="Cocoa HTML Writer">
+  <meta name="CocoaVersion" content="824.42">
+  <style type="text/css">
+    p.p1 {margin: 0.0px 0.0px 14.0px 0.0px; font: 18.0px Times}
+    p.p2 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.0px Times}
+    p.p3 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica}
+    p.p4 {margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica; min-height: 14.0px}
+  </style>
+</head>
+<body>
+<h2 style="margin: 0.0px 0.0px 14.0px 0.0px; font: 18.0px Times"><b>XMAX Revision History</b></h2>
+
+<p class="p2"><b>Version 1.05</b>  [2011-17-03]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added data file reading synchronization to avoid multiplex files artefacts on some systems</li>
+ </ul>
+
+<p class="p2"><b>Version 1.04</b>  [2010-09-11]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 74: Rotation feature doesn't work in version 1.03</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Increased stability of repainting process</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Program adopted for new versions of SeisFile and SeedCodec libraries</li>
+</ul>
+
+<p class="p2"><b>Version 1.03</b>  [2009-17-12]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 69: 'color' button disappeared on 1.02</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 70: PSD fails to reread RESP file for changes</li>
+</ul>
+
+<p class="p2"><b>Version 1.02</b>  [2009-23-09]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 56: SAC ascii output for waveforms and PSD added</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 57: Seismograms as one unified waveform. Added color mode "by gap", it separates by color only gaps, not overlaps </li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 59: Show seed headers for channel. Added 'View headers' menu item  and shortcut on command button.</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 60: show what filter (if any) was applied in PM</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 61: Let user specify a list of required frequencies at which PSD values are wanted in dumped freqs. Added separated configurations for every plugin and Plugins-PSD-HuttPeriods entry in the configuration file.</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 62: Change "Export PSN" to "Export PSD" label on button</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 63: Add waveform plot to psd window. Added "Toggle waveforms" button on PSD window to switch waveforms on/off.</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 64: Add ability to reinitialize data file storage content. Added 'File->Reload data' menu item</li>
+</ul>
+
+<p class="p2"><b>Version 0.85</b>  [2009-09-04]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 55: separate continuous files are not handled properly during filtering (and display) </li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added sun.java2d.d3d=false property to start scripts to avoid Sun's bug with slowness in XOR drawing in java 1.6.0_10 - 1.6.0_13</li>
+</ul>
+
+<p class="p2"><b>Version 0.84</b>  [2009-10-02]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 54: zoom produces incorrect display(time shift while display channels with significally different samplerate) </li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 33: problem with 'B' button for some functions on macs </li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 44: A complex multiplexed MSEED file is not processed properly by xmax(file with several channels splitted by one block in segment)</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 51: Particle Motion (wrong axis-channel mapping)</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 52: Particle Motion reference line is too short sometimes</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 47: Display of azimuth, backazimuth, distance - they are shows on status bar while mouse is over event </li>
+</ul>
+
+
+<p class="p2"><b>Version 0.83</b>  [2009-16-01]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 46 - default printing orientation changed to landscape</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 42 - runs maximized on Solaris, and remember last session window geometry</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 29 - time intervals bigger 24 hours shows as decimal days</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 45 - sometimes in -T mode process data from both -d option and config.xml</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 43 - display low/high models in PSD from 0.1s to 1000s regardless of data presence</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 36 - remember last used directories for graph and html export</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.82</b>  [2009-09-01]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 41 - added start time and duration information to pm, psd and spectra, also added channel's names to pm</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 39 - Reference line in Particle Motion does not replot properly</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 38 - mapping channels to particle motion axis</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 29 - wrong hour span label for window </li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 35 - fails to display mseed files with 1 sample records</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 37 - display whole version in window header</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 22 - Memory handling in -T mode fixed</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with channels sorting after restoring from disk dump </li>
+</ul>
+
+<p class="p2"><b>Version 0.81</b>  [2008-31-12]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 32 - program name changed to xmax instead of xyz</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 34 - When using the 'PLT: a)next or b)prev ' button functions such as the SCL, LIM, FLTR, OFFSET, MEAN, PHASE resets to it's defaults.</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 31 - removed unneeded debug messages from xmax output</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 30 - incorrect time series display during segments overlap inside the same trace</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 28 - noise model default display changed, it lasts to the whole default period range</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 27 - offset button works now like xyz - every next click on 'offset' button increases segments offset range, and any scaling command switches offset off</li>
+</ul>
+
+<p class="p2"><b>Version 0.80</b>  [2008-19-09]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 26 - -t option redesigned</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 24 - absence of metadata for one trace don't conduce to absence of psd for all traces</li>
+</ul>
+
+<p class="p2"><b>Version 0.79</b>  [2008-02-09]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added command line options for default mseed compression type and block length</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added new mseed compression types: HGLP, SRO, ASRO, CDSN, RSTN </li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 23 - PSD window limits</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 25 - -t switch is broken</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.78</b>  [2008-19-08]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Improved performance under X window</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">PSD, spectra etc now can be computed through several file segments if they doesn't have gaps and have the same samplerate</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.77</b>  [2008-26-07]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changed settings for maximim data length for psd and spectra, like in old xyz</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 13 - Standard length window range for PSD plot.</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 14 - RESP file information when calculating PSDs</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 21 - need a PSD error when max samples are exceeded</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 15 - log file dumped to working directory is not appropriate</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.76</b>  [2008-19-07]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 8 - problem with jpeg dump</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 17 - xmax repeats the first value of all time series</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 18 - no data after a 4K re-request record</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 19 - PSD where there are no data</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 20 - misrepresenting entire data stream when first record is a detection</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 4 - incorrect psd representation</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.75</b>  [2008-03-07]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Program remember last used directory while export</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed ticket # 16 - Mseed reader understands data without blockette 1000</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.74</b>  [2008-16-06]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed gaps after null-length out-of-order blocks in mseed files</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed incorrect time placement in exported mseed files</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.73</b>  [2008-11-06]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added Rotation function</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added {,} syntax in wildcards</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with incorrect responses epochs</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added export in miniSeed format</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added checking response files in the config file directory before standard responses directory</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added manual channels sorting in the select mode. Now channels are sorted in the sequence of selecting.</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.72</b>  [2008-23-05]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with excess gaps after skipping of segment with null length</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with incorrect drawing data with huge gaps</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added [] syntax to wildcards</li>
+</ul>
+
+<p class="p2"><b>Version 0.71</b>  [2008-15-05]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Two sequential files without gap between treated as one segment</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with memory overflow when we have a lot of responses </li>
+</ul>
+
+<p class="p2"><b>Version 0.70</b>  [2008-13-05]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Recompiled for Java 1.5</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Mouse click messages in status bar doesn't disappears after mouse moving</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Log files excluded from wildcards selection</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed exceptions if we have channel without any data</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed error with exception in plugins while all data for some channels lies in the gap</li> 
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed error with incorrect time placement sometimes while changing channel set</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changed default data length for PPM</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed unzoom </li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed lack of screen redraw during fast channel sets switching</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed partial screen redraw sometimes</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed processing of blocks with no data in mseed reading, log messages changed</li> 
+</ul>
+
+
+<p class="p2"><b>Version 0.69</b>  [2008-07-04]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added traces correlation</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added trace autocorrelation</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.68</b>  [2008-04-04]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bugs while config in the other directory </li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Functions redistributed among screen buttons, and added button for spectra plugin calling</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed minor graphics bugs</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added channels counter in the status bar</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changed spectra smoothing algorithm, as in old xyz. Added smoothing to PSD.</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added spectra deconvolutuon</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added spectra convolution with any other response</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">XYZ distribution reorganized to use new traceview library</li> 
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed exception on printing from spectra panel</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.67</b>  [2008-27-02]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Removed gray cross while working under java 6</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added undo mode for select and overlay commands</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Corrected working while select-overlay-select command sequence</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added support for quotated command line arguments</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed traces ordering in mode 1</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Removed infinite loop while problems with file data loading</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed digits formatting on status bar while mouse clicking</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with significant delay in drawing while we have gap on whole screen in one of channels</li> 
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed 'Too many opened files' messages</li>
+</ul>
+
+<p class="p2"><b>Version 0.66</b>  [2008-21-02]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Removed digital steps on traces</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Removed concurrent access exeptions while loading huge amount of files</li>
+ 
+</ul>
+
+<p class="p2"><b>Version 0.65</b>  [2008-15-02]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Bug fixing</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Program splitted to trace plotting library and XYZ itself</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.64</b>  [2008-29-01]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changed startup configuration</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added point count values in plugin configuration for psd and spectra</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changed wildcards parsing logic</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.63</b>  [2008-28-01]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with wrong trace and picks placement after zoom on some tracks</li>
+</ul>
+
+
+<p class="p2"><b>Version 0.62</b>  [2008-10-01]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added merge locations mode and -m command line option</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changed default startup mode</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added SAC format reading</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Reduced starting time for files in temporary storage</li>
+</ul>
+
+<p class="p2"><b>Version 0.61</b>  [2007-30-12]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added channel selection button</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added spectra pop-up window</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Cross-hair as default mode</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Looking RESP files in the current dir before configured special directory</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with particle motion on filtered data</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Reconfigured PSD window to look as in old XYZ</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Increased thickness of compass line in particle motion window</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with Com scale mode</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added correct error handling while wildcard processing</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added last added pick deletion mode</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added info line with visible time range and duration</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added first arrival display after phase mode activation</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with screen refreshing after tooltips disappearing</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added earthquake info in status bar while mouse pointer stay on arrival</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added default channels selection for particle motion</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Channel labels moved to right corner of trace window</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added max and min trace labels</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">DYO filter keeps last entered values</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed closed initial screen on Solaris</li>
+</ul>
+
+<p class="p2"><b>Version 0.60</b>  [2007-10-12]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Printing of main window and pop-ups</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Graphics export to BMP, JPEG, PNG</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">HTML reports</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Picks mode</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Trace export to ASCII and XML</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Selecting all traces while computing PSD</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changing PSD labels to non-logarithm values</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Limited range for Particle Motion transformation</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added max point count parameter for transformations and using it for PSD  </li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added channel type sorting mode</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Filtering by stations/networks/channels/locations</li>
+</ul>
+
+<p class="p2"><b>Version 0.59</b>  [2007-07-11]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with wrong channel selecting while display unit = TRACE</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with integer overflow on some traces</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with wrong channel time placement while we have channels with different start and end time<span class="Apple-converted-space"> </span></li>
+</ul>
+
+<p class="p2"><b>Version 0.58</b>  [2007-02-11]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Manual setting time range for display from configuration</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Trace sorting for display</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Trace grouping for display</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Speed up of time selecting<span class="Apple-converted-space"> </span></li>
+</ul>
+
+<p class="p2"><b>Version 0.57</b>  [2007-26-10]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added wildcards in the data path.<span class="Apple-converted-space"> </span></li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added X- and Y limits</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added wait cursor on time-consuming operations</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed little ending mseeds reading in the library.</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed bug with filters and XHair mode</li>
+</ul>
+
+<p class="p2"><b>Version 0.56</b>  [2007-17-10]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added transformations - responses, power spectra density and particle motion.</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added filters - low pass, high pass, band pass and design-your-own filter.<span class="Apple-converted-space"> </span></li>
+</ul>
+
+
+<p class="p2"><b>Version 0.55</b>  [2007-21-09]</p>
+<ul>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changed Philip Crotwell's mseed reading library to last version of fissures</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Fixed several bugs for data reading and plotting.<span class="Apple-converted-space"> </span></li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added undo operation on middle mouse button<span class="Apple-converted-space"> </span></li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added 1-mouse-button mode (with shift and ctrl) for Apple Mac OSX</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changed date output format for status bar messages.</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Added amplitude differences between two clicks in status bar</li>
+  <li style="margin: 0.0px 0.0px 0.0px 0.0px; font: 12.0px Helvetica">Changed to lazy phases computation instead of computation during start time (to not wait long for starting)</li>
+</ul>
+
+
+
+
+
+
+</body>
+</html>

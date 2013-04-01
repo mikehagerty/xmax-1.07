@@ -1,0 +1,12 @@
+
+com.isti.traceview
+com.isti.traceview.commands
+com.isti.traceview.common
+com.isti.traceview.data
+com.isti.traceview.gui
+com.isti.traceview.gui.controls
+com.isti.traceview.processing
+com.isti.xyz
+com.isti.xyz.common
+com.isti.xyz.data
+com.isti.xyz.gui

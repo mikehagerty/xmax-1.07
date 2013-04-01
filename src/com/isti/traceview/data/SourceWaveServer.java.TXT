@@ -1,0 +1,551 @@
+package com.isti.traceview.data;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.TimeZone;
+
+import javax.swing.JOptionPane;
+
+import org.apache.log4j.Logger;
+
+import gov.usgs.earthworm.Menu;
+import gov.usgs.earthworm.MenuItem;
+import gov.usgs.earthworm.WaveServer;
+import gov.usgs.util.Retriable;
+import gov.usgs.util.Util;
+import gov.usgs.util.UtilException;
+import gov.usgs.vdx.data.wave.Wave;
+
+import com.isti.traceview.common.TimeInterval;
+
+public class SourceWaveServer extends SourceSocket implements ISource {
+	private static Logger lg = Logger.getLogger(SourceWaveServer.class);
+	private static final long MAX_SPACE_USED = 500000000;
+	protected static final int VALUE_GAP = 999999;
+	protected static final int VALUE_NO_DATA = 919191;
+
+	public enum Protocol {
+		ws, wws
+	}
+
+	WaveServer ws = null;
+	private Protocol protocol;
+	private int gulpSize = 0;
+	private int gulpDelay = 0;
+	private boolean compress;
+	private WaveCache waveCache = null;
+	private boolean useCache = true;
+	private boolean pumping = true;
+	private List<RawDataProvider> currentRDPs = null;
+
+	private Set<RawDataProvider> pumpedRDPs = null;
+	private PumpThread pumpThread = null;
+	
+	public  SourceWaveServer(String name, Protocol protocol, String url, int port, int timeout, int gulpSize, int gulpDelay, TimeZone timeZone, boolean enabled, boolean pumping, int connectRetry) {
+		super();
+		this.pumping = pumping;
+		setName(name);
+		setProtocol(protocol);
+		ws = new WaveServer(){
+			public Menu getMenuSCNL(final String reqID)
+			{
+				Menu ret = null;
+				Retriable<Menu> mr = new Retriable<Menu>(getName(), maxRetries)
+						{
+							int attempts = 0;
+							public void attemptFix()
+							{
+								close();
+							}
+				
+							public boolean attempt() throws UtilException
+							{
+								try
+								{
+									attempts++;
+									if (!connected())
+										connect();
+									writeString("MENU: " + reqID + " SCNL\n");
+									String info = readString();
+									result = new Menu(info);
+									return true;
+								}
+								catch (Exception e)
+								{
+									logger.warning("getMenuSCNL() IOException: " + e.getMessage());
+									if(attempts==1){
+										String[] options = {"Yes", "No", "No and disable server"};
+										int selectedOption = JOptionPane.showOptionDialog(null, "Connection to server " + getName() + " failed. Do you want to continue trying?",
+												"Warning", JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE, null, options, options[0]);
+										if(selectedOption == JOptionPane.NO_OPTION){
+											attemptFix();
+											throw new UtilException("User cancel connection");
+										} else if(selectedOption == JOptionPane.CANCEL_OPTION){
+											attemptFix();
+											setEnabled(false);
+											throw new UtilException("User cancel connection");
+										}
+									}
+								}
+								return false;
+							}
+						};
+				try{
+					ret = mr.go();
+				}
+				catch(UtilException e){
+					//Do nothing 
+				}
+				return ret;
+			}
+		};
+		setServer(url);
+		setPort(port);
+		setTimeout(timeout);
+		setGulpSize(gulpSize);
+		setGulpDelay(gulpDelay);
+		setTimeZone(timeZone);
+		super.setEnabled(enabled);
+		ws.setMaxRetries(connectRetry);
+		ws.setTimeout(getTimeout());
+		waveCache = new WaveCache(MAX_SPACE_USED);
+		currentRDPs = Collections.synchronizedList(new ArrayList<RawDataProvider>());
+		pumpedRDPs = Collections.synchronizedSet(new HashSet<RawDataProvider>());
+	}
+
+	/**
+	 * @param server
+	 *            the server to set
+	 */
+	public void setServer(String server) {
+		super.setServer(server);
+		ws.setHost(server);
+	}
+
+	public void setPort(int port) {
+		super.setPort(port);
+		ws.setPort(port);
+	}
+
+	@Override
+	public void load(Segment segment) {
+	}
+
+	@Override
+	public String getBlockHeaderText(long blockStartOffset) {
+		return null;
+	}
+
+	@Override
+	public FormatType getFormatType() {
+		return FormatType.ASCII;
+	}
+
+	/**
+	 * @return the protocol
+	 */
+	public Protocol getProtocol() {
+		return protocol;
+	}
+
+	/**
+	 * @param protocol
+	 *            the protocol to set
+	 */
+	public void setProtocol(Protocol protocol) {
+		this.protocol = protocol;
+	}
+
+	/**
+	 * @return the compress
+	 */
+	public boolean isCompress() {
+		return compress;
+	}
+
+	/**
+	 * @param compress
+	 *            the compress to set
+	 */
+	public void setCompress(boolean compress) {
+		this.compress = compress;
+	}
+
+	/**
+	 * @return the gulpSize
+	 */
+	public int getGulpSize() {
+		return gulpSize;
+	}
+
+	/**
+	 * @param gulpSize
+	 *            the gulpSize to set
+	 */
+	public void setGulpSize(int gulpSize) {
+		this.gulpSize = gulpSize;
+	}
+
+	/**
+	 * @return the gulpDelay
+	 */
+	public int getGulpDelay() {
+		return gulpDelay;
+	}
+
+	/**
+	 * @param gulpDelay
+	 *            the gulpDelay to set
+	 */
+	public void setGulpDelay(int gulpDelay) {
+		this.gulpDelay = gulpDelay;
+	}
+	
+	public void addPumpChannel(RawDataProvider rdp) {
+		synchronized (pumpedRDPs) {
+			lg.debug("SourceWaveServer: adding pump channel " + rdp);
+			pumpedRDPs.add(rdp);
+		}
+	}
+
+	public void removePumpChannel(RawDataProvider rdp) {
+		synchronized (pumpedRDPs) {
+			lg.debug("SourceWaveServer: removing pump channel " + rdp);
+			pumpedRDPs.remove(rdp);
+		}
+	}
+
+	@Override
+	public Set<IChannel> parse(DataModule dataModule) {
+		Set<IChannel> ret;
+		synchronized (this) {
+			lg.debug("SourceWaveServer.parse begin " + this);
+			ret = new HashSet<IChannel>();
+			Menu menu = ws.getMenuSCNL();
+			int i = 0;
+			for (MenuItem item : menu.getItems()) {
+				// if (i==2) {
+				IChannel currentChannel = dataModule.createChannel(item.getChannel(), dataModule.getOrAddStation(item.getStation()), item.getNetwork(),	item.getLocation());
+				Segment marker = new Segment(this, 0, Util.j2KToDate(Util.ewToJ2K(item.getStartTime())), 0, 0, item.getPin());
+				currentChannel.setEndTime(Util.j2KToDate(Util.ewToJ2K(item.getEndTime())).getTime());
+				currentChannel.addSegment(marker);
+				dataModule.addChannel(currentChannel);
+				ret.add(currentChannel);
+				// }
+				i++;
+			}
+			lg.debug("SourceWaveServer.parse end " + this);
+			setParsed(true);
+		}
+		return ret;
+	}
+
+	/**
+	 * Get data for given time interval from cache, if absent start loading from
+	 * network and return null. Also return null if loading already started.
+	 */
+	@Override
+	public List<Segment> getRawData(RawDataProvider rdp, TimeInterval ti) {
+		lg.debug("SourceWaveServer.getRawData: " + rdp + " " + ti);
+		Wave sw = null;
+		if (useCache)
+			sw = waveCache.getWave(rdp.getStation().getName(), rdp.getChannelName(), rdp.getNetworkName(), rdp.getLocationName(), ti);
+		if (sw == null) {
+			if (currentRDPs.contains(rdp) && rdp.getLastUsedTI().equals(ti)) {
+				lg.debug("SourceWaveServer.getRawData: thread for " + rdp + " already started");
+				return null;
+			} else {
+				if (ti.equals(rdp.getLastUsedTI()) && rdp.isNullAnswer()) {
+					lg.debug("SourceWaveServer.getRawData: no data");
+					return new ArrayList<Segment>();
+				} else {
+					DataThread dt = new DataThread(rdp, ti);
+					lg.debug("SourceWaveServer.getRawData: starting thread " + dt.getName());
+					currentRDPs.add(rdp);
+					rdp.setLastUsedTI(ti);
+					rdp.setLoaded(false);
+					rdp.setLoadingStarted(true);
+					dt.start();
+					checkPump(ti);
+					return null;
+				}
+			}
+		} else {
+			List<Segment> ret = Collections.synchronizedList(new ArrayList<Segment>());
+			for (Segment segment : getSegments(sw)) {
+				if(ti.isIntersect(segment.getTimeRange())){
+					ret.add(segment);
+				}
+			}
+			checkPump(ti);
+//			rdp.setLoaded(true);
+//			rdp.setLoadingStarted(false);
+//			setChanged();
+//			notifyObservers(ti);
+			lg.debug("SourceWaveServer.getRawData ended: " + rdp + " " + ti + "; returned size " + (ret == null ? "null" : ret.size()));
+			return ret;
+		}
+	}
+
+	/**
+	 * Get all loaded data from cache
+	 */
+	@Override
+	public List<Segment> getRawData(RawDataProvider rdp) {
+		lg.debug("SourceWaveServer.getRawData: " + rdp);
+		Wave sw = null;
+		List<Segment> ret = Collections.synchronizedList(new ArrayList<Segment>());
+		if (useCache)
+			sw = waveCache.getWave(rdp.getStation().getName(), rdp.getChannelName(), rdp.getNetworkName(), rdp.getLocationName(), null);
+		if (sw != null) {
+			for (Segment segment : getSegments(sw)) {
+				ret.add(segment);
+			}
+//			rdp.setLoaded(true);
+//			rdp.setLoadingStarted(false);
+//			setChanged();
+//			notifyObservers(null);
+			lg.debug("SourceWaveServer.getRawData ended: " + rdp + "; returned size " + (ret == null ? "null" : ret.size()));
+			return ret;
+		}
+		return ret;
+	}
+
+	private List<Segment> getSegments(Wave wave) {
+		List<Segment> ret = new ArrayList<Segment>();
+		int point = 0;
+		int segmentStartPoint = 0;
+		int previousValue = VALUE_GAP;
+		int min = Integer.MAX_VALUE;
+		int max = Integer.MIN_VALUE;
+		for (int value : wave.buffer) {
+			if (!(value == VALUE_GAP || value == VALUE_NO_DATA)) {
+				if (value > max)
+					max = value;
+				if (value < min)
+					min = value;
+				if (previousValue == VALUE_GAP || previousValue == VALUE_NO_DATA) {
+					segmentStartPoint = point;
+				}
+			}
+			if ((value == VALUE_GAP || value == VALUE_NO_DATA) && !(previousValue == VALUE_GAP || previousValue == VALUE_NO_DATA)) {
+				ret.add(createSegment(wave, point, segmentStartPoint, min, max));
+				min = Integer.MAX_VALUE;
+				max = Integer.MIN_VALUE;
+			}
+			previousValue = value;
+			point++;
+		}
+		if (!(previousValue == VALUE_GAP || previousValue == VALUE_NO_DATA)) {
+			ret.add(createSegment(wave, point, segmentStartPoint, min, max));
+			min = Integer.MAX_VALUE;
+			max = Integer.MIN_VALUE;
+		}
+		return ret;
+	}
+
+	private Segment createSegment(Wave wave, int point, int segmentStartPoint, int min, int max) {
+		Segment segment = new Segment(this, 0, Util.j2KToDate(wave.getStartTime() + segmentStartPoint * 1.0 / wave.getSamplingRate()),
+				1000.0D / wave.getSamplingRate(), point - segmentStartPoint, 0);
+		segment.setData(Arrays.copyOfRange(wave.buffer, segmentStartPoint, point), max, min);
+		return segment;
+	}
+	
+	public void deleteRawData(RawDataProvider rdp, TimeInterval ti){
+		waveCache.deleteWave(rdp.getStation().getName(), rdp.getChannelName(), rdp.getNetworkName(), rdp.getLocationName(), ti);
+	}
+
+	class DataThread extends Thread {
+		RawDataProvider rdp = null;
+		TimeInterval ti = null;
+
+		DataThread(RawDataProvider rdp, TimeInterval ti) {
+			this.rdp = rdp;
+			this.ti = ti;
+		}
+
+		public synchronized void run() {
+			synchronized (ws) {
+				lg.debug("Pulling from server: " + rdp + " " + ti);
+				Wave sw = null;
+				TimeInterval includingDayTI = ti.getIncludingDayInterval();
+				double offset = getTimeZone().getOffset(includingDayTI.getStart());
+				double at1 = Util.j2KToEW(Util.dateToJ2K(includingDayTI.getStartTime())) + offset / 1000.0;
+				double at2 = Util.j2KToEW(Util.dateToJ2K(includingDayTI.getEndTime())) + offset / 1000.0;
+				sw = ws.getRawData(rdp.getStation().getName(), rdp.getChannelName(), rdp.getNetworkName(), rdp.getLocationName(), at1, at2);
+				ws.close();
+				if (sw != null) {
+					if(rdp.getSampleRate()==0.0){
+						rdp.setSampleRate(1000.0D / sw.getSamplingRate());
+					}
+					sw.convertToJ2K();
+					sw.setStartTime(sw.getStartTime() - offset / 1000.0);
+					sw.register();
+					TimeInterval swInterval = new TimeInterval(Util.j2KToDate(sw.getStartTime()),Util.j2KToDate(sw.getEndTime()));
+					if(!includingDayTI.isIntersect(swInterval)){
+						lg.error("Requested time interval " + includingDayTI + " and got time interval " + swInterval + " doesn't intersect");
+					}
+					waveCache.putWave(rdp.getStation().getName(), rdp.getChannelName(), rdp.getNetworkName(), rdp.getLocationName(), TimeInterval.getAggregate(includingDayTI, swInterval), sw);
+					lg.debug("Got data: " + rdp + " " + includingDayTI);
+					rdp.setLoaded(true);
+					rdp.setLoadingStarted(false);
+					rdp.setNullAnswer(false);
+				} else {
+					// waveCache.putWave(da.rdp.getStation().getName(),
+					// da.rdp.getChannelName(), da.rdp.getNetworkName(),
+					// da.rdp.getLocationName(), da.ti,
+					// getEmptyWave(da.ti.getStartTime(), da.ti.getEndTime()));
+					rdp.setLoaded(true);
+					rdp.setLoadingStarted(false);
+					rdp.setNullAnswer(true);
+					lg.debug("Found nothing");
+				}
+				setChanged();
+				notifyObservers(ti);
+				currentRDPs.remove(rdp);
+			}
+		}
+	}
+
+	class PumpThread extends Thread {
+		TimeInterval ti = null;
+		TimeInterval toPump = null;
+
+		PumpThread(TimeInterval ti) {
+			lg.debug("new PumpThread: " + ti);
+			this.ti = ti;
+			this.toPump = getPumpingInterval(ti);
+		}
+
+		public void run() {
+			lg.debug("Pumping from server: " + ti);
+			try {
+				TimeInterval pumped = ti.getIncludingDayInterval();
+				TimeInterval gulp = null;
+				while ((toPump.getStart() < pumped.getStart()) || (toPump.getEnd() > pumped.getEnd())) {
+					if ((gulp == null) || (((gulp.getEnd() >= pumped.getEnd()) && (pumped.getStart() > toPump.getStart())))
+							|| (pumped.getEnd() >= toPump.getEnd())) {
+						gulp = new TimeInterval(pumped.getStart() - 2, pumped.getStart() - 1).getIncludingDayInterval();
+						pumped = new TimeInterval(gulp.getStart(), pumped.getEnd());
+					} else {
+						gulp = new TimeInterval(pumped.getEnd() + 1, pumped.getEnd() + 2).getIncludingDayInterval();
+						pumped = new TimeInterval(pumped.getStart(), gulp.getEnd());
+					}
+					lg.debug("pumping: gulp " + gulp);
+					double offset = getTimeZone().getOffset(gulp.getStart());
+					double at1 = Util.j2KToEW(Util.dateToJ2K(gulp.getStartTime())) + offset / 1000.0;
+					double at2 = Util.j2KToEW(Util.dateToJ2K(gulp.getEndTime())) + offset / 1000.0;
+					synchronized (pumpedRDPs) {
+						for (RawDataProvider rdp : pumpedRDPs) {
+							lg.debug("pumping: channel " + rdp);
+							while (currentRDPs.size() != 0) {
+								try {
+									Thread.sleep(200);
+								} catch (InterruptedException e) {
+									lg.debug("pumping: interrupted");
+									return;
+								}
+							}
+							try {
+								Thread.sleep(10);
+							} catch (InterruptedException e) {
+								lg.debug("pumping: interrupted");
+								return;
+							}
+							Wave sw = waveCache.getWave(rdp.getStation().getName(), rdp.getChannelName(), rdp.getNetworkName(), rdp.getLocationName(), gulp);
+							if (sw == null) {
+								lg.debug("pumping: missed in cache");
+								synchronized (ws) {
+									sw = ws.getRawData(rdp.getStation().getName(), rdp.getChannelName(), rdp.getNetworkName(), rdp.getLocationName(), at1, at2);
+									ws.close();
+									if (sw != null) {
+										sw.convertToJ2K();
+										sw.setStartTime(sw.getStartTime() - offset / 1000.0);
+										sw.register();
+										waveCache.putWave(rdp.getStation().getName(), rdp.getChannelName(), rdp.getNetworkName(), rdp.getLocationName(), gulp,
+												sw);
+									}
+								}
+							}
+						}
+					}
+				}
+			} catch (Exception e) {
+				pumpedRDPs = null;
+				e.printStackTrace();
+			}
+		}
+	}
+
+	private static TimeInterval getPumpingInterval(TimeInterval ti) {
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.setTime(ti.getIncludingDayInterval().getStartTime());
+		long pumpingStart = new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), 0, 0, 0).getTimeInMillis();
+		long pumpingEnd = Math.min(new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, 0, 0, 0).getTimeInMillis(), new Date().getTime());
+		return new TimeInterval(pumpingStart, pumpingEnd);
+	}
+
+	public void checkPump(TimeInterval ti) {
+		lg.debug("checkPump: " + ti);
+		if (pumping) {
+			// Data pumping
+			if ((pumpThread == null) || !pumpThread.toPump.equals(getPumpingInterval(ti))) {
+				if (!(pumpThread == null)) {
+					lg.debug("pumping: interrupting");
+					pumpThread.interrupt();
+				}
+				pumpThread = new PumpThread(ti);
+				pumpThread.start();
+			}
+		}
+	}
+
+	public String toString() {
+		return getName();
+	}
+
+	// private static Wave getEmptyWave(Date start, Date end){
+	// int[] data = {Wave.NO_DATA};
+	// double j2kstart = Util.dateToJ2K(start);
+	// double j2kend = Util.dateToJ2K(end);
+	// return new Wave(data, j2kstart, 1.0/(j2kend-j2kstart));
+	// }
+	//
+	// class GetDataArguments {
+	// RawDataProvider rdp = null;
+	// TimeInterval ti = null;
+	// boolean isNullAnswer = false;
+	//
+	// public GetDataArguments(RawDataProvider rdp, TimeInterval ti) {
+	// this.rdp = rdp;
+	// this.ti = ti;
+	// }
+	//
+	// public String toString() {
+	// return rdp + "; " + ti;
+	// }
+	//
+	// public boolean equals(Object obj) {
+	// if (!(obj instanceof GetDataArguments))
+	// return false;
+	// else {
+	// GetDataArguments pa = (GetDataArguments) obj;
+	// return ti.equals(pa.ti) && (rdp.getStation().getName() == null ? false :
+	// rdp.getStation().getName().equals(pa.rdp.getStation().getName())) &&
+	// (rdp.getChannelName() == null ? false :
+	// rdp.getChannelName().equals(pa.rdp.getChannelName()))
+	// && (rdp.getNetworkName() == null ? false :
+	// rdp.getNetworkName().equals(pa.rdp.getNetworkName())) && (
+	// rdp.getLocationName() == null ? false : rdp.getLocationName().equals(pa.
+	// rdp.getLocationName()));
+	// }
+	// }
+	// }
+}

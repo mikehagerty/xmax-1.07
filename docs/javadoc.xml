@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="public" author="true" classpath="plugins/com.isti.xmax.ppm/classes;plugins/com.isti.xmax.showResponse/classes;../com.isti.TraceView/bin;../com.isti.TraceView/libs/JEvalResp.jar;../com.isti.TraceView/libs/ekit-1.4.jar;../com.isti.TraceView/libs/log4j-1.2.14.jar;../com.isti.TraceView/libs/jcommon-1.0.10.jar;libs/BareBonesBrowserLaunch.jar;../com.isti.TraceView/libs/JavaSeed.jar;../com.isti.TraceView/libs/SeedCodec-1.0.4.jar;plugins/com.isti.xyz.filter.lowpass/classes;libs/commons-cli-1.0.jar;libs/fissuresIDL-1.0.jar;plugins/com.isti.xyz.filter.dyo/classes;../com.isti.TraceView/libs/jfreechart-1.0.6.jar;libs/jpf.jar;../com.isti.TraceView/libs/commons-collections-3.2.jar;libs/commons-configuration-1.4.jar;libs/jdom.jar;libs/TauP-1.1.7.jar;../com.isti.TraceView/libs/isti_shape.jar;../com.isti.TraceView/libs/isti_util.jar;plugins/com.isti.xyz.correlation/classes;plugins/com.isti.xyz.spectra/classes;plugins/com.isti.xyz.filter.bandpass/classes;../com.isti.TraceView/libs/oscache-2.1-mod2.jar;../com.isti.TraceView/libs/commons-logging-1.1.jar;plugins/com.isti.xmax.filter.highpass/classes;../com.isti.TraceView/libs/seisFile-1.0.4.jar;plugins/com.isti.xmax.psd/classes;../com.isti.TraceView/libs/fissuresUtil-1.0.19.jar;libs/commons-lang-2.3.jar" destdir="doc" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" packagenames="com.isti.xmax.data,com.isti.traceview,com.isti.traceview.data,com.isti.traceview.gui,com.isti.xmax.gui,com.isti.traceview.common,com.isti.xmax,com.isti.xmax.common,com.isti.traceview.processing,com.isti.traceview.commands,com.isti.traceview.gui.controls" source="1.6" sourcefiles="plugins/com.isti.xmax.filter.dyo/sources/FilterDYO.java,plugins/com.isti.xmax.spectra/source/ViewSpectra.java,plugins/com.isti.xmax.ppm/source/ViewPPM.java,plugins/com.isti.xmax.psd/source/ViewPSD.java,plugins/com.isti.xmax.filter.lowpass/source/FilterLP.java,plugins/com.isti.xmax.psd/source/NoiseModel.java,plugins/com.isti.xyz.ppm/source/TransPPM.java,plugins/com.isti.xyz.ppm/source/PPMPolarItemRenderer.java,plugins/com.isti.xyz.showResponse/source/ViewResp.java,plugins/com.isti.xyz.spectra/source/TransSpectra.java,plugins/com.isti.xyz.filter.highpass/source/FilterHP.java,plugins/com.isti.xyz.psd/source/TransPSD.java,plugins/com.isti.xyz.correlation/source/TransCorrelation.java,plugins/com.isti.xyz.ppm/source/AngleInputDialog.java,plugins/com.isti.xyz.filter.bandpass/source/FilterBP.java,plugins/com.isti.xyz.showResponse/source/TransResp.java,plugins/com.isti.xyz.correlation/source/ViewCorrelation.java" sourcepath="plugins/com.isti.xyz.psd/source;../com.isti.TraceView/src;../com.isti.TraceView/images;plugins/com.isti.xyz.ppm/source;plugins/com.isti.xyz.filter.bandpass/source;plugins/com.isti.xyz.filter.lowpass/source;plugins/com.isti.xyz.correlation/source;src;plugins/com.isti.xyz.spectra/source;plugins/com.isti.xyz.showResponse/source;plugins/com.isti.xyz.filter.highpass/source;plugins/com.isti.xyz.filter.dyo/sources" splitindex="true" use="true" version="true">
+            <link href="http://www.jfree.org/jfreechart/api/javadoc"/>
+            <link href="http://commons.apache.org/collections/api-release"/>
+            <link href="http://www.seis.sc.edu/software/seisFile/apidocs"/>
+            <link href="http://www.docjar.com/docs/api/com/hexidec/"/>
+            <link href="http://www.jfree.org/jcommon/api"/>
+            <link href="http://www.opensymphony.com/oscache/api"/>
+            <link href="http://jpf.sourceforge.net/api"/>
+            <link href="http://www.seis.sc.edu/software/fissuresUtil/apidocs"/>
+            <link href="http://bigboy.isti.com/~sid/shape/api/"/>
+            <link href="http://www.centerkey.com/java/browser/javadoc/"/>
+            <link href="http://java.sun.com/javase/6/docs/api"/>
+            <link href="http://commons.apache.org/cli/api-release"/>
+            <link href="http://www.jdom.org/docs/apidocs"/>
+            <link href="http://www.seis.sc.edu/software/TauP/apidocs"/>
+            <link href="http://commons.apache.org/lang/api-release"/>
+            <link href="http://commons.apache.org/logging/apidocs"/>
+            <link href="http://www.seis.sc.edu/software/SeedCodec/apidocs"/>
+            <link href="http://commons.apache.org/configuration/apidocs"/>
+            <link href="http://www.iris.edu/manuals/pdcc3.0"/>
+            <link href="http://logging.apache.org/log4j/1.2/apidocs"/>
+            <link href="file:/C:/Users/Max/workspace/com.isti.TraceView/doc/"/>
+        </javadoc>
+    </target>
+</project>

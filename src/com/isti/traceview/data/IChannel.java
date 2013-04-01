@@ -1,0 +1,107 @@
+package com.isti.traceview.data;
+
+import java.awt.Color;
+import java.io.DataOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Observer;
+import java.util.Set;
+import java.util.SortedSet;
+
+import com.isti.traceview.TraceViewException;
+import com.isti.traceview.common.IEvent;
+import com.isti.traceview.common.Station;
+import com.isti.traceview.common.TimeInterval;
+import com.isti.traceview.data.Channel.Sensor;
+import com.isti.traceview.data.Channel.Status;
+import com.isti.traceview.gui.IColorModeState;
+import com.isti.traceview.processing.IFilter;
+import com.isti.traceview.processing.Rotation;
+
+public interface IChannel extends Observer, Comparable, Serializable {
+	public void initPointCache(IColorModeState colorMode);
+	public PlotData getPlotData(TimeInterval ti, int pointCount, Rotation rotation, IFilter filter, IColorModeState colorMode) throws TraceViewException;
+	public SortedSet<IEvent> getEvents();
+	public SortedSet<IEvent> getEvents(Date time);
+	public SortedSet<IEvent> getEvents(Date time, long precision);
+	public boolean addEvent(IEvent event);
+	public boolean removeEvent(IEvent event);
+	public void addEvents(Set<IEvent> evt);
+	public Date getLastAccessed();
+	public void dump(String serialFileName);
+	public void printout();
+	public Color getColor();
+	public void setColor(Color color);
+	public double getScale();
+	public void setScale(double scale);
+	
+	//----------from RawDataProvider-----------------------------------------------------
+	public void setEndTime(long endTime);
+	public List<Segment> getRawData(Rotation rotation);
+	public List<Segment> getRawData();
+	public int getRawData(double time);
+	public List<Segment> getRawData(TimeInterval ti);
+	public int getDataLength(TimeInterval ti);
+	public int getSegmentCount();
+	public void addSegment(Segment segment);
+	public TimeInterval getTimeRange();
+	public int getMaxValue();
+	public int getMinValue();
+	public void drop();
+	public boolean isLoadingStarted();
+	public void setLoadingStarted(boolean loading);
+	public boolean isLoaded();
+	public void setLoaded(boolean loaded);
+	public void loadData(TimeInterval ti);
+	public List<ISource> getSources();
+	public ISource getSource(Date date);
+	public void setDataStream(Object dataStream);
+	public BufferedRandomAccessFile getDataStream();
+	public boolean isSerialized();
+	public void load();
+	public void load(TimeInterval ti);
+	public void dumpMseed(DataOutputStream ds, TimeInterval ti, IFilter filter) throws IOException;
+	public void dumpASCII(FileWriter fw, TimeInterval ti, IFilter filter) throws IOException;
+	public void dumpXML(FileWriter fw, TimeInterval ti, IFilter filter) throws IOException;
+	public void dumpSacAscii(DataOutputStream ds, TimeInterval ti, IFilter filter) throws IOException, TraceViewException;
+	public void sort();
+	public String getSerialFileName();
+	public TimeInterval getLastUsedTI();
+	public void setLastUsedTI(TimeInterval lastUsedTI);
+	public boolean isNullAnswer();
+	public void setNullAnswer(boolean isNullAnswer);
+	public boolean isNetworkDataProvider();
+	public void deleteRawData(TimeInterval ti);
+	public double getMedian(TimeInterval ti);
+	public double getStdDev(TimeInterval ti, double mean);
+	//---------from Channel------------------------------------------------------------------
+	public String getChannelName();
+	public char getType();
+	public String getLocationName();
+	public String getNetworkName();
+	public Station getStation();
+	public void setStation(Station station);
+	public double getSampleRate();
+	public void setSampleRate(double sampleRate);
+	public Response getResponse() throws TraceViewException;
+	public boolean isSelected();
+	public void setSelected(boolean selected);
+	public Sensor getSensor();
+	public void setSensor(Sensor sensor);
+	public Status getStatus();
+	public void setStatus(Status status);
+	public String getName();
+	public String getUnitName();
+	public int hashCode();
+	//---------from Observable---------------------------------------------------------------
+	public void addObserver(Observer o);
+	public int countObservers(); 
+	public void deleteObserver(Observer o); 
+	public void deleteObservers();
+	public boolean hasChanged();
+	public void notifyObservers();
+	public void notifyObservers(Object arg); 
+}
