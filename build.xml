@@ -30,6 +30,23 @@
         <pathelement location="${build.resources}/images"/>
     </path>
 
+        <path id="classpath">
+                <fileset dir="libs" includes="*.jar" />
+        </path>
+        <typedef resource="org/java/plugin/tools/ant/jpf-tasks.properties">
+                <classpath refid="classpath" />
+        </typedef>
+
+        <target name="build-plugins">
+<!--
+                <mkdir dir="${build.root}/plugins" />
+-->
+                <ant dir="plugins/com.isti.xmax.filter.lowpass" target="build" />
+                <ant dir="plugins/com.isti.xmax.filter.highpass" target="build" />
+                <ant dir="plugins/com.isti.xmax.filter.bandpass" target="build" />
+                <ant dir="plugins/com.isti.xmax.filter.dyo" target="build" />
+        </target>
+
 
 <!--CLEAN-->
     <target name="clean">
