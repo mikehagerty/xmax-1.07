@@ -26,6 +26,9 @@
         <fileset dir="${libs.dir}">
             <include name="**/*.jar"/>
         </fileset>
+      <dirset dir="plugins/">
+        <include name="**/classes"/>
+      </dirset>
 <!-- Doesn't seem to look for images anymore ... ? -->
         <pathelement location="${build.resources}/images"/>
     </path>

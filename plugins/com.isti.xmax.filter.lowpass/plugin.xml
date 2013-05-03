@@ -6,7 +6,12 @@
 		<import plugin-id="com.isti.xmax.core"/> 
 	</requires> 
 	<runtime> 
+<!--
 		<library id="filterLP" path="classes/" type="code"/> 
+-->
+        <library id="filterLP" path="classes/" type="code"> 
+            <export prefix="*" />
+        </library>
 	</runtime> 
 	<extension plugin-id="com.isti.xmax.core" point-id="Filter" id="LP"> 
 		<parameter id="class" value="FilterLP"/>

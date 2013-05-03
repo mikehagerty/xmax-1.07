@@ -2,9 +2,17 @@
 <!DOCTYPE plugin PUBLIC "-//JPF//Java Plug-in Manifest 0.5" 
 "http://jpf.sourceforge.net/plugin_0_5.dtd"> 
 <plugin id="com.isti.xmax.filterDYO" version="3.0"> 
+
 	<requires> 
 		<import plugin-id="com.isti.xmax.core"/> 
+<!--
+		<import plugin-id="com.isti.xmax.filterBP"/> 
+		<import plugin-id="com.isti.xmax.filterLP"/> 
+		<import plugin-id="com.isti.xmax.filterHP"/> 
+-->
+<!--
 		<import plugin-id="com.isti.xmax.filterBP" exported="true"/> 
+-->
 	</requires> 
 	<runtime> 
 		<library id="filterDYO" path="classes/" type="code"/> 

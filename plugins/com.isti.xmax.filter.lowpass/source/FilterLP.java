@@ -36,6 +36,7 @@ public class FilterLP implements IFilter {
 		a = new double[order];
 		b = new double[order];
 		c = new double[order];
+System.out.format("== FilterLP: order=%d cutFrequency=%f\n", order, cutFrequency);
 	}
 
 	/**
@@ -43,6 +44,7 @@ public class FilterLP implements IFilter {
 	 */
 	public FilterLP() {
 		this(2, 0.05);
+System.out.format("== FilterLP: USE DEFAULT: order=%d cutFrequency=%f\n", 2, .05);
 	}
 
 	/**

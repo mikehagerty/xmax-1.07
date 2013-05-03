@@ -162,9 +162,18 @@ System.out.format("==== cutLowFrequency=[%.2f] cutHighFrequency=[%.2f] =========
 				order = (Integer) orderCB.getSelectedItem();
 				if (!Double.isNaN(cutLowFrequency) && !Double.isNaN(cutHighFrequency)) {
 					if (cutLowFrequency < cutHighFrequency) {
+//MTH:
+                    //filter = null;
+                    //JOptionPane.showMessageDialog(XMAXframe.getInstance(), "MTH: THIS IS A TEST", "Error",
+                            //JOptionPane.ERROR_MESSAGE);
+					filter = new FilterLP(order, cutLowFrequency);
+					setVisible(false);
+					needProcessing = true;
+/**
 						filter = new FilterBP(order, cutLowFrequency, cutHighFrequency);
 						setVisible(false);
 						needProcessing = true;
+**/
 					} else {
 						JOptionPane.showMessageDialog(XMAXframe.getInstance(), "Low frequency should be less then high one", "Error",
 								JOptionPane.ERROR_MESSAGE);

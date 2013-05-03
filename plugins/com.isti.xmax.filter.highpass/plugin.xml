@@ -6,8 +6,14 @@
 		<import plugin-id="com.isti.xmax.core"/> 
 	</requires> 
 	<runtime> 
+<!--
 		<library id="filterHP" path="classes/" type="code"/> 
+-->
+        <library id="filterHP" path="classes/" type="code"> 
+            <export prefix="*" />
+        </library>
 	</runtime> 
+
 	<extension plugin-id="com.isti.xmax.core" point-id="Filter" id="HP"> 
 		<parameter id="class" value="FilterHP"/>
 		<parameter id="name" value="HP filter"/> 

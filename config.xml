@@ -79,5 +79,10 @@
 <Width>1280</Width>
 <Heigth>774</Heigth>
 </Frame>
+<UserDir>
+<MSEED>/Users/mth/mth/Projects/xmax</MSEED>
+<ASCII>/Users/mth/mth/Projects/xmax</ASCII>
+<SAC>/Users/mth/mth/Projects/xmax</SAC>
+</UserDir>
 </SessionData>
 </XMAXSessionConfiguration>
