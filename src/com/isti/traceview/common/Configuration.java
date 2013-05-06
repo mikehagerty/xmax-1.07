@@ -214,8 +214,10 @@ public class Configuration extends Observable {
 	 * @uml.property name="dataPath"
 	 */
 	public String getDataPath() {
+System.out.format("== getDataPath: dataPath=[%s]\n", dataPath);
 		String ret = dataPath.replace("." + File.separator, getConfigFileDir());
 		lg.debug("Configuration.getDataPath(): " + ret);
+System.out.format("== getDataPath: return=[%s]\n", ret);
 		return ret;
 	}
 

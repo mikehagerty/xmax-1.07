@@ -226,6 +226,7 @@ public class DataModule extends Observable {
 		lg.debug("DataModule.addDataSources() begin");
 		for (ISource datafile : datafiles) {
 			if (!isSourceLoaded(datafile)) {
+	System.out.format("== DataModule.addDataSources: Parsing datafile:[%s]\n", datafile.getName());
 				lg.debug("Parsing " + datafile.getName());
 				wasAdded = true;
 				changedChannels.addAll(datafile.parse(this));

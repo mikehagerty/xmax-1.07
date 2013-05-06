@@ -94,16 +94,26 @@ public class Wildcard {
 	 */
 
 	private void explore(String partPath, int i) {
+//System.out.format("== Enter explore: partPath=[%s] i=[%d]\n", partPath, i);
 		File f = new File(partPath);
 		File[] dir = f.listFiles();
 		if (dir.length > 0) {
 			for (int j = 0; j < dir.length; j++) {
 				if (path.size() > i + 1) {
 					if (Wildcard.matches(path.get(i + 1), dir[j].getName())) {
+//System.out.format("==   explore: Wildcard.matches(%s) matches dir[%d].getName=[%s]\n", path.get(i+1), j, dir[j].getName());
 						if (dir[j].isDirectory()) {
 							explore(partPath + File.separator + dir[j].getName(), i + 1);
 						} else {
-							lst.add(dir[j]);
+                       // MTH: This was adding matches *along* the path, not just at the terminus, e.g.,
+                       //      -d 'xs0/seed/*/2012/2012_160*/*seed' was matching xs0/seed/jts.seed
+                       // Added if statement to make sure we only match at the end of the path
+                       // This has not been tested on Windows! 
+							//lst.add(dir[j]);
+                            if ((path.size() - i) == 2) {
+//System.out.format("== explore: lst.add( file=[%s] <i=%d> pathLen=%d)\n", dir[j], i, path.size());
+							    lst.add(dir[j]);
+							}
 						}
 					}
 				} else {

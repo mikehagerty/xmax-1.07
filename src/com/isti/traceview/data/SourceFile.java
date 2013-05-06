@@ -105,9 +105,11 @@ public abstract class SourceFile extends Observable implements ISource {
 	public static List<ISource> getDataFiles(String wildcardedMask) throws TraceViewException {
 		lg.debug("Loading data using path: " + wildcardedMask);
 		List<File> listFiles = new Wildcard().getFilesByMask(wildcardedMask);
+//System.out.format("== getDataFiles: wildcardedMask=[%s] listFiles size=%d\n", wildcardedMask, listFiles.size());
 		Iterator<File> it = listFiles.iterator();
 		while (it.hasNext()) {
 			File file = it.next();
+System.out.format("== getDataFiles: file=[%s]\n", file.toString());
 			if (file.getName().matches(".*\\.log(\\.\\d{1,2}){0,1}$")) {
 				lg.warn("Excluding file " + file.getName() + " from loading list");
 				it.remove();
@@ -127,6 +129,7 @@ public abstract class SourceFile extends Observable implements ISource {
 	public static List<ISource> getDataFiles(List<File> files) throws TraceViewException {
 		List<ISource> lst = new ArrayList<ISource>();
 		for (File file: files) {
+//System.out.format("== Test file=[%s]\n", file.getName());
 			if (isIMS(file)) {
 				lst.add(new SourceFileIMS(file));
 				lg.debug("IMS data file added: " + file.getAbsolutePath());
@@ -149,6 +152,15 @@ public abstract class SourceFile extends Observable implements ISource {
 				lg.warn("Unknown file format: " + file.getName());
 			}
 		}
+/** MTH
+System.out.format("== SourceFile.getDataFiles: Added the following files:\n");
+		Iterator<ISource> it = lst.iterator();
+		while (it.hasNext()) {
+			String fName = it.next().getName();
+System.out.format("==     File:[%s]\n", fName);
+		}
+**/
+
 		return lst;
 	}
 
@@ -228,8 +240,6 @@ public abstract class SourceFile extends Observable implements ISource {
 			                }
 			                blockNumber++;
 			            }
-
-   			 	
 				/*
 				while (blockNumber < 5) {
 					long currentOffset = dis.getFilePointer();
@@ -252,12 +262,17 @@ public abstract class SourceFile extends Observable implements ISource {
 				}
 				*/	
 			} catch (EOFException ex) {
+System.out.format("==     [file:%s] Caught EOFException:%s\n", file.getName(), ex.toString());
 				return true;
 			} catch (FileNotFoundException e) {
 				return false;
 			} catch (IOException e) {
 				return false;
 			} catch (SeedFormatException e) {
+System.out.format("==     [file:%s] Caught SeedFormatException:%s\n", file.getName(), e.toString());
+				return false;
+			} catch (RuntimeException e) {
+System.out.format("==     [file:%s] Caught RuntimeException:%s\n", file.getName(), e.toString());
 				return false;
 			} finally {
 				try {
